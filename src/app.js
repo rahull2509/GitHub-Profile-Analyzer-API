@@ -29,8 +29,12 @@ if (process.env.NODE_ENV !== 'test') {
 }
 
 // Swagger API Documentation
-const swaggerDocument = YAML.load(path.join(__dirname, '../docs/swagger.yaml'));
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+try {
+  const swaggerDocument = YAML.load(path.join(__dirname, '../docs/swagger.yaml'));
+  app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+} catch (err) {
+  console.warn('Swagger documentation could not be loaded:', err.message);
+}
 
 // Routes
 app.use('/', routes);
