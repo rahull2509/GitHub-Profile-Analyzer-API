@@ -1,0 +1,123 @@
+openapi: 3.0.0
+info:
+  title: GitHub Profile Analyzer API
+  description: API for analyzing and storing GitHub profiles.
+  version: 1.0.0
+servers:
+  - url: http://localhost:3000
+    description: Local development server
+paths:
+  /health:
+    get:
+      summary: Health check endpoint
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: healthy
+  /api/github/analyze:
+    post:
+      summary: Analyze a new GitHub profile
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - username
+              properties:
+                username:
+                  type: string
+                  example: octocat
+      responses:
+        '201':
+          description: Created
+  /api/github/profiles:
+    get:
+      summary: Get all profiles
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 10
+        - name: search
+          in: query
+          schema:
+            type: string
+        - name: sort
+          in: query
+          schema:
+            type: string
+            enum: [score, followers, created_at]
+            default: created_at
+        - name: order
+          in: query
+          schema:
+            type: string
+            enum: [asc, desc]
+            default: desc
+      responses:
+        '200':
+          description: OK
+  /api/github/profiles/{username}:
+    get:
+      summary: Get a single profile by username
+      parameters:
+        - name: username
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+        '404':
+          description: Not Found
+    delete:
+      summary: Delete a profile
+      parameters:
+        - name: username
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+  /api/github/reanalyze/{username}:
+    put:
+      summary: Reanalyze an existing profile
+      parameters:
+        - name: username
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+  /api/github/top:
+    get:
+      summary: Get top 10 leaderboard
+      responses:
+        '200':
+          description: OK
+  /api/github/stats:
+    get:
+      summary: Get system statistics
+      responses:
+        '200':
+          description: OK
